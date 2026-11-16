@@ -1,0 +1,31 @@
+name: Atualizar candles
+
+on:
+  schedule:
+    - cron: "*/10 11-21 * * 1-5"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: atualizar-candles
+  cancel-in-progress: true
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: python collector.py
+      - name: Salvar data.json
+        run: |
+          git config user.name "coletor-nq"
+          git config user.email "coletor-nq@users.noreply.github.com"
+          git add data.json
+          git diff --staged --quiet || (git commit -m "candles $(date -u +%FT%TZ)" && git push)
