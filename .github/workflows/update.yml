@@ -2,7 +2,7 @@ name: Atualizar candles
 
 on:
   schedule:
-    - cron: "*/10 11-21 * * 1-5"
+    - cron: "*/10 * * * 0-5"
   workflow_dispatch: {}
 
 permissions:
